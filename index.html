@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simulação de Aposta</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="reset.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="r-flex p-2">
+        <aside class="c-flex">
+            <h1>Simulação de Aposta</h1>
+            <ul class="">
+                <li class="">
+                    <label for="valor">Valor da Aposta:</label>
+                    <input type="number" id="valor" min="1" value="10">
+                </li>
+                <li class="list-group-item">
+                    <label for="taxa">Probabilidade de vitória (%):</label>
+                    <input type="number" id="taxa" min="0" max="100" value="50" step="0.01">
+                </li>
+                <li class="list-group-item">
+                    <label for="boost">Multiplicador da recompensa:</label>
+                    <input type="number" id="boost" min="0" value="1">
+                </li>
+            </ul>
+            <hr />
+            <div>
+                <button type="button" class="" onclick="fazerAposta()">Apostar</button>
+                <button type="button" class="" onclick="fazerApostas(10)">Apostar 10x</button>
+                <button type="button" class="" onclick="fazerApostas(100)">Apostar 100x</button>
+                <button type="button" class="" onclick="fazerApostas(500)">Apostar 500x</button>
+            </div>
+            <hr />
+            <div>
+                <label>
+                    <input type="radio" name="velocidade" value="1000">
+                    Lento
+                </label>
+                <label>
+                    <input type="radio" name="velocidade" value="500" checked>
+                    Normal
+                </label>
+                <label>
+                    <input type="radio" name="velocidade" value="1">
+                    Rápido
+                </label>
+                <br />
+                <button type="button" class="btn btn-secondary" id="autoplay" onclick="autoplay()">
+                    Iniciar aposta automatica
+                </button>
+                <button type="button" class="btn btn-secondary" id="pararAutoplay" onclick="pararAutoplay()" disabled>
+                    Parar aposta automatica
+                </button>
+                <hr />
+                <button type="button" class="btn btn-secondary" onclick="resetAposta()">Resetar</button>
+            </div>
+        </aside>
+        <div class="vr"></div>
+        <main class="d-flex flex-column vw-75 bg-primary-subtle">
+            <section class="r-flex gap-1">
+                <div class="quadro">
+                    Lucro Atual: R$ <span id="saldo">0.00</span>
+                </div>
+                <div class="quadro">
+                    Rodada Atual: <span id="rodada">0</span>
+                </div>
+            </section>
+
+            <canvas id="grafico" class="w-100"></canvas>
+            <canvas id="histograma" class="w-100"></canvas>
+        </main>
+    </div>
+    <script>
+        // Inicializar o gráfico
+        var ctxAposta = document.getElementById('grafico').getContext('2d');
+        var chartAposta = new Chart(ctxAposta, {
+            type: 'line',
+            data: {
+                labels: [0],
+                datasets: [{
+                    label: 'Saldo',
+                    data: [0],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Dados do histograma
+        var dados = new Array(10).fill(0);
+
+        // Obtém o elemento canvas
+        var canvas = document.getElementById('histograma');
+        var ctx = canvas.getContext('2d');
+
+        // Cria o gráfico de barras
+        var chartHistograma = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    '< (-1.000)',
+                    '-750',
+                    '-500',
+                    '-250',
+                    '0',
+                    '250',
+                    '500',
+                    '750',
+                    '> 1.000',
+                ],
+                datasets: [{
+                    label: 'Histograma',
+                    data: dados,
+                    backgroundColor: 'blue'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
